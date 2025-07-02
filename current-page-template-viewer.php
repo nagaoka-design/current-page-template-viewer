@@ -1,7 +1,7 @@
 <?php
 /**
  * Plugin Name: Current Page Template Viewer
- * Plugin URI: https://github.com/yourusername/current-page-template-viewer
+ * Plugin URI: https://github.com/nagaoka-design/current-page-template-viewer/
  * Description: Display current template file and directory name on screen
  * Version: 1.0.0
  * Author: Nagaoka Design Office
