@@ -18,14 +18,14 @@ delete_option('current_page_template_viewer_options');
 
 // For multisite installations
 if (is_multisite()) {
-    global $wpdb;
-    $blog_ids = $wpdb->get_col("SELECT blog_id FROM $wpdb->blogs");
-    $original_blog_id = get_current_blog_id();
+    $sites = get_sites(array(
+        'fields' => 'ids',
+        'number' => 0, // Get all sites
+    ));
     
-    foreach ($blog_ids as $blog_id) {
-        switch_to_blog($blog_id);
+    foreach ($sites as $site_id) {
+        switch_to_blog($site_id);
         delete_option('current_page_template_viewer_options');
+        restore_current_blog();
     }
-    
-    switch_to_blog($original_blog_id);
 }

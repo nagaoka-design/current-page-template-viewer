@@ -2,7 +2,7 @@
 Contributors: nagaokadesign
 Tags: development, template, debug
 Requires at least: 5.0
-Tested up to: 6.8.1
+Tested up to: 6.8
 Requires PHP: 7.4
 Stable tag: 1.0.0
 License: GPL-2.0+
@@ -43,11 +43,6 @@ Yes, you can configure the display position and styling through the plugin setti
 
 While the plugin is safe, it's primarily intended for development and staging environments. We recommend disabling it on production sites.
 
-== Screenshots ==
-
-1. Settings page
-2. Template display on frontend
-3. Included Template Files display on frontend
 
 == Changelog ==
 

@@ -185,7 +185,7 @@ class Current_Page_Template_Viewer {
      * Section description
      */
     public function settings_section_callback() {
-        echo __('Configure how template information is displayed.', 'current-page-template-viewer');
+        echo esc_html__('Configure how template information is displayed.', 'current-page-template-viewer');
     }
 
     /**
@@ -195,10 +195,10 @@ class Current_Page_Template_Viewer {
         $options = $this->get_options();
         ?>
         <select name="current_page_template_viewer_options[position]">
-            <option value="top-left" <?php selected($options['position'], 'top-left'); ?>><?php _e('Top Left', 'current-page-template-viewer'); ?></option>
-            <option value="top-right" <?php selected($options['position'], 'top-right'); ?>><?php _e('Top Right', 'current-page-template-viewer'); ?></option>
-            <option value="bottom-left" <?php selected($options['position'], 'bottom-left'); ?>><?php _e('Bottom Left', 'current-page-template-viewer'); ?></option>
-            <option value="bottom-right" <?php selected($options['position'], 'bottom-right'); ?>><?php _e('Bottom Right', 'current-page-template-viewer'); ?></option>
+            <option value="top-left" <?php selected($options['position'], 'top-left'); ?>><?php esc_html_e('Top Left', 'current-page-template-viewer'); ?></option>
+            <option value="top-right" <?php selected($options['position'], 'top-right'); ?>><?php esc_html_e('Top Right', 'current-page-template-viewer'); ?></option>
+            <option value="bottom-left" <?php selected($options['position'], 'bottom-left'); ?>><?php esc_html_e('Bottom Left', 'current-page-template-viewer'); ?></option>
+            <option value="bottom-right" <?php selected($options['position'], 'bottom-right'); ?>><?php esc_html_e('Bottom Right', 'current-page-template-viewer'); ?></option>
         </select>
         <?php
     }
@@ -210,7 +210,7 @@ class Current_Page_Template_Viewer {
         $options = $this->get_options();
         ?>
         <input type="text" name="current_page_template_viewer_options[bg_color]" value="<?php echo esc_attr($options['bg_color']); ?>" class="color-picker" />
-        <p class="description"><?php _e('Example: rgba(255, 255, 255, 0.5) or #ffffff', 'current-page-template-viewer'); ?></p>
+        <p class="description"><?php esc_html_e('Example: rgba(255, 255, 255, 0.5) or #ffffff', 'current-page-template-viewer'); ?></p>
         <?php
     }
 
@@ -231,10 +231,10 @@ class Current_Page_Template_Viewer {
         $options = $this->get_options();
         ?>
         <select name="current_page_template_viewer_options[display_mode]">
-            <option value="always" <?php selected($options['display_mode'], 'always'); ?>><?php _e('Always Display', 'current-page-template-viewer'); ?></option>
-            <option value="debug_only" <?php selected($options['display_mode'], 'debug_only'); ?>><?php _e('Only When WP_DEBUG is Enabled', 'current-page-template-viewer'); ?></option>
+            <option value="always" <?php selected($options['display_mode'], 'always'); ?>><?php esc_html_e('Always Display', 'current-page-template-viewer'); ?></option>
+            <option value="debug_only" <?php selected($options['display_mode'], 'debug_only'); ?>><?php esc_html_e('Only When WP_DEBUG is Enabled', 'current-page-template-viewer'); ?></option>
         </select>
-        <p class="description"><?php _e('Set when template information should be displayed', 'current-page-template-viewer'); ?></p>
+        <p class="description"><?php esc_html_e('Set when template information should be displayed', 'current-page-template-viewer'); ?></p>
         <?php
     }
 
@@ -245,10 +245,10 @@ class Current_Page_Template_Viewer {
         $options = $this->get_options();
         ?>
         <select name="current_page_template_viewer_options[enable_for_admins_only]">
-            <option value="yes" <?php selected($options['enable_for_admins_only'], 'yes'); ?>><?php _e('Yes', 'current-page-template-viewer'); ?></option>
-            <option value="no" <?php selected($options['enable_for_admins_only'], 'no'); ?>><?php _e('No', 'current-page-template-viewer'); ?></option>
+            <option value="yes" <?php selected($options['enable_for_admins_only'], 'yes'); ?>><?php esc_html_e('Yes', 'current-page-template-viewer'); ?></option>
+            <option value="no" <?php selected($options['enable_for_admins_only'], 'no'); ?>><?php esc_html_e('No', 'current-page-template-viewer'); ?></option>
         </select>
-        <p class="description"><?php _e('If "No" is selected, the template info will be shown to all users', 'current-page-template-viewer'); ?></p>
+        <p class="description"><?php esc_html_e('If "No" is selected, the template info will be shown to all users', 'current-page-template-viewer'); ?></p>
         <?php
     }
     
@@ -259,10 +259,10 @@ class Current_Page_Template_Viewer {
         $options = $this->get_options();
         ?>
         <select name="current_page_template_viewer_options[show_theme_directory]">
-            <option value="yes" <?php selected($options['show_theme_directory'], 'yes'); ?>><?php _e('Yes', 'current-page-template-viewer'); ?></option>
-            <option value="no" <?php selected($options['show_theme_directory'], 'no'); ?>><?php _e('No', 'current-page-template-viewer'); ?></option>
+            <option value="yes" <?php selected($options['show_theme_directory'], 'yes'); ?>><?php esc_html_e('Yes', 'current-page-template-viewer'); ?></option>
+            <option value="no" <?php selected($options['show_theme_directory'], 'no'); ?>><?php esc_html_e('No', 'current-page-template-viewer'); ?></option>
         </select>
-        <p class="description"><?php _e('Display the theme directory name', 'current-page-template-viewer'); ?></p>
+        <p class="description"><?php esc_html_e('Display the theme directory name', 'current-page-template-viewer'); ?></p>
         <?php
     }
     
@@ -273,10 +273,10 @@ class Current_Page_Template_Viewer {
         $options = $this->get_options();
         ?>
         <select name="current_page_template_viewer_options[show_template_file]">
-            <option value="yes" <?php selected($options['show_template_file'], 'yes'); ?>><?php _e('Yes', 'current-page-template-viewer'); ?></option>
-            <option value="no" <?php selected($options['show_template_file'], 'no'); ?>><?php _e('No', 'current-page-template-viewer'); ?></option>
+            <option value="yes" <?php selected($options['show_template_file'], 'yes'); ?>><?php esc_html_e('Yes', 'current-page-template-viewer'); ?></option>
+            <option value="no" <?php selected($options['show_template_file'], 'no'); ?>><?php esc_html_e('No', 'current-page-template-viewer'); ?></option>
         </select>
-        <p class="description"><?php _e('Display the template file name', 'current-page-template-viewer'); ?></p>
+        <p class="description"><?php esc_html_e('Display the template file name', 'current-page-template-viewer'); ?></p>
         <?php
     }
 
@@ -369,7 +369,7 @@ class Current_Page_Template_Viewer {
         // Set CSS based on position
         $position_css = $this->get_position_css($options['position']);
 
-        echo '<div id="current-page-template-viewer-display" style="position: fixed; ' . $position_css . ' z-index: 9999; cursor: pointer;">';
+        echo '<div id="current-page-template-viewer-display" style="position: fixed; ' . esc_attr($position_css) . ' z-index: 9999; cursor: pointer;">';
         echo '<code style="background-color: ' . esc_attr($options['bg_color']) . '; ' .
              'padding: 0.5em 1em; ' .
              'font-size: 12px; ' .
@@ -390,7 +390,7 @@ class Current_Page_Template_Viewer {
         }
         
         // Display as "ThemeName/template.php" format
-        echo implode('/', $display_parts);
+        echo esc_html(implode('/', $display_parts));
         
         echo "</code>";
         echo "</div>\n";
@@ -400,7 +400,7 @@ class Current_Page_Template_Viewer {
         echo '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 8px; max-width: 600px; max-height: 80%; overflow-y: auto; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">';
         
         echo '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">';
-        echo '<h3 style="margin: 0; color: #333;">' . __('Included Template Files', 'current-page-template-viewer') . '</h3>';
+        echo '<h3 style="margin: 0; color: #333;">' . esc_html__('Included Template Files', 'current-page-template-viewer') . '</h3>';
         echo '<span id="current-page-template-viewer-close" style="cursor: pointer; font-size: 24px; color: #999; font-weight: bold;">&times;</span>';
         echo '</div>';
         
@@ -413,7 +413,7 @@ class Current_Page_Template_Viewer {
             }
             echo '</ul>';
         } else {
-            echo '<p style="color: #999; font-style: italic;">' . __('No additional template files found.', 'current-page-template-viewer') . '</p>';
+            echo '<p style="color: #999; font-style: italic;">' . esc_html__('No additional template files found.', 'current-page-template-viewer') . '</p>';
         }
         
         echo '</div>';
