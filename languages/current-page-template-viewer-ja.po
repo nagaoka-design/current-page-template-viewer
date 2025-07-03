@@ -1,128 +1,130 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
 msgid ""
 msgstr ""
-"Project-Id-Version: Template Viewer 1.0.0\n"
+"Project-Id-Version: Current Page Template Viewer 1.0.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2025-04-08 12:00+0000\n"
-"PO-Revision-Date: 2025-04-08 12:00+0000\n"
+"POT-Creation-Date: 2025-01-01 00:00+0000\n"
+"PO-Revision-Date: 2025-01-01 00:00+0900\n"
 "Last-Translator: \n"
-"Language-Team: \n"
+"Language-Team: Japanese\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=1; plural=0;\n"
 "X-Generator: Poedit 3.0\n"
-"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;"
-"esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;"
-"_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-Basepath: ..\n"
+"X-Poedit-KeywordsList: __;_e;_n:1,2;_x:1,2c;_ex:1,2c;_nx:4c,1,2;esc_attr__;esc_attr_e;esc_attr_x:1,2c;esc_html__;esc_html_e;esc_html_x:1,2c;_n_noop:1,2;_nx_noop:3c,1,2;__ngettext_noop:1,2\n"
 "X-Poedit-SearchPath-0: .\n"
-"X-Poedit-SearchPathExcluded-0: vendor\n"
+"X-Poedit-SearchPathExcluded-0: *.js\n"
 
-#: template-viewer.php:111
-msgid "Template Viewer Settings"
-msgstr "テンプレートビューア設定"
+#: current-page-template-viewer.php:71
+msgid "Current Page Template Viewer Settings"
+msgstr "カレントページテンプレートビューア設定"
 
-#: template-viewer.php:112
-msgid "Template Viewer"
-msgstr "テンプレートビューア"
+#: current-page-template-viewer.php:72
+msgid "Current Page Template Viewer"
+msgstr "カレントページテンプレートビューア"
 
-#: template-viewer.php:121
+#: current-page-template-viewer.php:84
 msgid "Display Settings"
 msgstr "表示設定"
 
-#: template-viewer.php:127
+#: current-page-template-viewer.php:91
 msgid "Position"
-msgstr "表示位置"
+msgstr "位置"
 
-#: template-viewer.php:135
+#: current-page-template-viewer.php:98
 msgid "Background Color"
 msgstr "背景色"
 
-#: template-viewer.php:143
+#: current-page-template-viewer.php:105
 msgid "Text Color"
 msgstr "テキスト色"
 
-#: template-viewer.php:151
-msgid "Border Color"
-msgstr "ボーダー色"
-
-#: template-viewer.php:159
+#: current-page-template-viewer.php:112
 msgid "Display Mode"
 msgstr "表示モード"
 
-#: template-viewer.php:167
+#: current-page-template-viewer.php:119
 msgid "Show to Admins Only"
 msgstr "管理者のみに表示"
 
-#: template-viewer.php:175
+#: current-page-template-viewer.php:126
 msgid "Show Theme Directory"
 msgstr "テーマディレクトリを表示"
 
-#: template-viewer.php:183
+#: current-page-template-viewer.php:133
 msgid "Show Template File"
 msgstr "テンプレートファイルを表示"
 
-#: template-viewer.php:194
+#: current-page-template-viewer.php:169
 msgid "Configure how template information is displayed."
 msgstr "テンプレート情報の表示方法を設定します。"
 
-#: template-viewer.php:204
+#: current-page-template-viewer.php:177
 msgid "Top Left"
 msgstr "左上"
 
-#: template-viewer.php:205
+#: current-page-template-viewer.php:178
 msgid "Top Right"
 msgstr "右上"
 
-#: template-viewer.php:206
+#: current-page-template-viewer.php:179
 msgid "Bottom Left"
 msgstr "左下"
 
-#: template-viewer.php:207
+#: current-page-template-viewer.php:180
 msgid "Bottom Right"
 msgstr "右下"
 
-#: template-viewer.php:220
+#: current-page-template-viewer.php:190
 msgid "Example: rgba(255, 255, 255, 0.5) or #ffffff"
-msgstr "例: rgba(255, 255, 255, 0.5) または #ffffff"
+msgstr "例：rgba(255, 255, 255, 0.5) または #ffffff"
 
-#: template-viewer.php:256
+#: current-page-template-viewer.php:207
 msgid "Always Display"
 msgstr "常に表示"
 
-#: template-viewer.php:257
+#: current-page-template-viewer.php:208
 msgid "Only When WP_DEBUG is Enabled"
-msgstr "WP_DEBUGが有効な場合のみ表示"
+msgstr "WP_DEBUGが有効な場合のみ"
 
-#: template-viewer.php:259
+#: current-page-template-viewer.php:210
 msgid "Set when template information should be displayed"
-msgstr "テンプレート情報をいつ表示するかを設定します"
+msgstr "テンプレート情報を表示するタイミングを設定"
 
-#: template-viewer.php:272
+#: current-page-template-viewer.php:219
+#: current-page-template-viewer.php:238
+#: current-page-template-viewer.php:257
 msgid "Yes"
 msgstr "はい"
 
-#: template-viewer.php:273
+#: current-page-template-viewer.php:220
+#: current-page-template-viewer.php:239
+#: current-page-template-viewer.php:258
 msgid "No"
 msgstr "いいえ"
 
-#: template-viewer.php:275
+#: current-page-template-viewer.php:222
 msgid "If \"No\" is selected, the template info will be shown to all users"
-msgstr "「いいえ」を選択すると、すべてのユーザーに表示されます"
+msgstr "「いいえ」を選択した場合、テンプレート情報は全ユーザーに表示されます"
 
-#: template-viewer.php:290
+#: current-page-template-viewer.php:241
 msgid "Display the theme directory name"
-msgstr "テーマのディレクトリ名を表示する"
+msgstr "テーマディレクトリ名を表示"
 
-#: template-viewer.php:305
+#: current-page-template-viewer.php:260
 msgid "Display the template file name"
-msgstr "テンプレートファイル名を表示する"
+msgstr "テンプレートファイル名を表示"
 
-#: template-viewer.php:354
-msgid "Theme Directory: %s"
-msgstr "テーマのディレクトリ名：%s"
+#: current-page-template-viewer.php:373
+msgid "Included Template Files"
+msgstr "インクルードされたテンプレートファイル"
 
-#: template-viewer.php:362
-msgid "Template File: %s"
-msgstr "テンプレートファイル名：%s"
+#: current-page-template-viewer.php:386
+msgid "No additional template files found."
+msgstr "追加のテンプレートファイルが見つかりませんでした。"
