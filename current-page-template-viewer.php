@@ -44,21 +44,11 @@ class Current_Page_Template_Viewer {
     /**
      * Constructor
      */
-    private function __construct() {
-        // Load First
-        $this->load_textdomain();
-        
+    private function __construct() {        
         // Add actions and filters
         add_action('admin_menu', array($this, 'add_admin_menu'));
         add_action('admin_init', array($this, 'register_settings'));
         add_action('wp_footer', array($this, 'display_template_info'));
-    }
-    
-    /**
-     * Load plugin textdomain
-     */
-    public function load_textdomain() {
-        load_plugin_textdomain('current-page-template-viewer', false, dirname(plugin_basename(__FILE__)) . '/languages');
     }
 
     /**
@@ -145,7 +135,7 @@ class Current_Page_Template_Viewer {
     }
 
     /**
-     * オプションのサニタイズ
+     * Sanitize options
      */
     public function sanitize_options($input) {
         $sanitized_input = array();
