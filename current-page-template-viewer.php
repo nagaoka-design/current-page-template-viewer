@@ -4,7 +4,7 @@
  * Plugin Name: Current Page Template Viewer
  * Plugin URI: https://github.com/nagaoka-design/current-page-template-viewer/
  * Description: Display current template file and directory name on screen
- * Version: 1.0.0
+ * Version: 1.0.1
  * Author: Nagaoka Design Office
  * Author URI: https://nag-design.com
  * License: GPL-2.0+
@@ -17,10 +17,10 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-class CPTV_Current_Page_Template_Viewer
+class CURRPATE_Current_Page_Template_Viewer
 {
-    // Default
-    private $default_options = [
+    // Default options
+    private $currpate_default_options = [
         'position' => 'top-right',
         'bg_color' => 'rgba(255, 255, 255, 0.5)',
         'text_color' => '#000000',
@@ -31,17 +31,17 @@ class CPTV_Current_Page_Template_Viewer
     ];
 
     // Instance
-    private static $instance = null;
+    private static $currpate_instance = null;
 
     /**
      * Get Instance
      */
-    public static function cptv_get_instance()
+    public static function currpate_get_instance()
     {
-        if (null === self::$instance) {
-            self::$instance = new self();
+        if (null === self::$currpate_instance) {
+            self::$currpate_instance = new self();
         }
-        return self::$instance;
+        return self::$currpate_instance;
     }
 
     /**
@@ -49,154 +49,97 @@ class CPTV_Current_Page_Template_Viewer
      */
     private function __construct()
     {
-        // Add actions and filters
-        add_action('admin_menu', array($this, 'cptv_add_admin_menu'));
-        add_action('admin_init', array($this, 'cptv_register_settings'));
-        add_action('wp_footer', array($this, 'cptv_display_template_info'));
-        add_action('wp_enqueue_scripts', array($this, 'cptv_enqueue_scripts'));
+        add_action('admin_menu', array($this, 'currpate_add_admin_menu'));
+        add_action('admin_init', array($this, 'currpate_register_settings'));
+        add_action('wp_footer', array($this, 'currpate_display_template_info'));
+        add_action('wp_enqueue_scripts', array($this, 'currpate_enqueue_scripts'));
     }
 
     /**
      * Enqueue scripts
      */
-    public function cptv_enqueue_scripts()
+    public function currpate_enqueue_scripts()
     {
         wp_register_script(
-            'cptv-popup-script',
-            false, // no external file
-            array(), // no dependencies
-            '1.0.0',
-            true // load in footer
+            'currpate-popup-script',
+            plugin_dir_url(__FILE__) . 'js/currpate-popup.js',
+            array(),
+            '1.0.1',
+            true
         );
     }
 
     /**
      * Add admin menu
      */
-    public function cptv_add_admin_menu()
+    public function currpate_add_admin_menu()
     {
         add_options_page(
             __('Current Page Template Viewer Settings', 'current-page-template-viewer'),
             __('Current Page Template Viewer', 'current-page-template-viewer'),
             'manage_options',
             'current-page-template-viewer',
-            array($this, 'cptv_options_page')
+            array($this, 'currpate_options_page')
         );
     }
 
     /**
      * Register settings
      */
-    public function cptv_register_settings()
+    public function currpate_register_settings()
     {
-        register_setting('cptv_current_page_template_viewer', 'cptv_current_page_template_viewer_options', array($this, 'cptv_sanitize_options'));
+        register_setting('currpate_current_page_template_viewer', 'currpate_current_page_template_viewer_options', array($this, 'currpate_sanitize_options'));
 
         add_settings_section(
-            'cptv_current_page_template_viewer_section',
+            'currpate_current_page_template_viewer_section',
             __('Display Settings', 'current-page-template-viewer'),
-            array($this, 'cptv_settings_section_callback'),
-            'cptv_current_page_template_viewer'
+            array($this, 'currpate_settings_section_callback'),
+            'currpate_current_page_template_viewer'
         );
 
-        add_settings_field(
-            'position',
-            __('Position', 'current-page-template-viewer'),
-            array($this, 'cptv_position_field_callback'),
-            'cptv_current_page_template_viewer',
-            'cptv_current_page_template_viewer_section'
+        $currpate_fields = array(
+            'position' => __('Position', 'current-page-template-viewer'),
+            'bg_color' => __('Background Color', 'current-page-template-viewer'),
+            'text_color' => __('Text Color', 'current-page-template-viewer'),
+            'display_mode' => __('Display Mode', 'current-page-template-viewer'),
+            'enable_for_admins_only' => __('Show to Admins Only', 'current-page-template-viewer'),
+            'show_theme_directory' => __('Show Theme Directory', 'current-page-template-viewer'),
+            'show_template_file' => __('Show Template File', 'current-page-template-viewer'),
         );
 
-        add_settings_field(
-            'bg_color',
-            __('Background Color', 'current-page-template-viewer'),
-            array($this, 'cptv_bg_color_field_callback'),
-            'cptv_current_page_template_viewer',
-            'cptv_current_page_template_viewer_section'
-        );
-
-        add_settings_field(
-            'text_color',
-            __('Text Color', 'current-page-template-viewer'),
-            array($this, 'cptv_text_color_field_callback'),
-            'cptv_current_page_template_viewer',
-            'cptv_current_page_template_viewer_section'
-        );
-
-        add_settings_field(
-            'display_mode',
-            __('Display Mode', 'current-page-template-viewer'),
-            array($this, 'cptv_display_mode_callback'),
-            'cptv_current_page_template_viewer',
-            'cptv_current_page_template_viewer_section'
-        );
-
-        add_settings_field(
-            'enable_for_admins_only',
-            __('Show to Admins Only', 'current-page-template-viewer'),
-            array($this, 'cptv_enable_for_admins_only_callback'),
-            'cptv_current_page_template_viewer',
-            'cptv_current_page_template_viewer_section'
-        );
-
-        add_settings_field(
-            'show_theme_directory',
-            __('Show Theme Directory', 'current-page-template-viewer'),
-            array($this, 'cptv_show_theme_directory_callback'),
-            'cptv_current_page_template_viewer',
-            'cptv_current_page_template_viewer_section'
-        );
-
-        add_settings_field(
-            'show_template_file',
-            __('Show Template File', 'current-page-template-viewer'),
-            array($this, 'cptv_show_template_file_callback'),
-            'cptv_current_page_template_viewer',
-            'cptv_current_page_template_viewer_section'
-        );
+        foreach ($currpate_fields as $currpate_field_key => $currpate_field_label) {
+            add_settings_field(
+                $currpate_field_key,
+                $currpate_field_label,
+                array($this, 'currpate_' . $currpate_field_key . '_field_callback'),
+                'currpate_current_page_template_viewer',
+                'currpate_current_page_template_viewer_section'
+            );
+        }
     }
 
     /**
      * Sanitize options
      */
-    public function cptv_sanitize_options($input)
+    public function currpate_sanitize_options($currpate_input)
     {
-        $sanitized_input = array();
+        $currpate_sanitized_input = array();
 
-        if (isset($input['position'])) {
-            $sanitized_input['position'] = sanitize_text_field($input['position']);
+        $currpate_allowed_fields = array('position', 'bg_color', 'text_color', 'display_mode', 'enable_for_admins_only', 'show_theme_directory', 'show_template_file');
+
+        foreach ($currpate_allowed_fields as $currpate_field) {
+            if (isset($currpate_input[$currpate_field])) {
+                $currpate_sanitized_input[$currpate_field] = sanitize_text_field($currpate_input[$currpate_field]);
+            }
         }
 
-        if (isset($input['bg_color'])) {
-            $sanitized_input['bg_color'] = sanitize_text_field($input['bg_color']);
-        }
-
-        if (isset($input['text_color'])) {
-            $sanitized_input['text_color'] = sanitize_text_field($input['text_color']);
-        }
-
-        if (isset($input['display_mode'])) {
-            $sanitized_input['display_mode'] = sanitize_text_field($input['display_mode']);
-        }
-
-        if (isset($input['enable_for_admins_only'])) {
-            $sanitized_input['enable_for_admins_only'] = sanitize_text_field($input['enable_for_admins_only']);
-        }
-
-        if (isset($input['show_theme_directory'])) {
-            $sanitized_input['show_theme_directory'] = sanitize_text_field($input['show_theme_directory']);
-        }
-
-        if (isset($input['show_template_file'])) {
-            $sanitized_input['show_template_file'] = sanitize_text_field($input['show_template_file']);
-        }
-
-        return $sanitized_input;
+        return $currpate_sanitized_input;
     }
 
     /**
      * Section description
      */
-    public function cptv_settings_section_callback()
+    public function currpate_settings_section_callback()
     {
         echo esc_html__('Configure how template information is displayed.', 'current-page-template-viewer');
     }
@@ -204,15 +147,22 @@ class CPTV_Current_Page_Template_Viewer
     /**
      * Position field
      */
-    public function cptv_position_field_callback()
+    public function currpate_position_field_callback()
     {
-        $options = $this->cptv_get_options();
+        $currpate_options = $this->currpate_get_options();
+        $currpate_positions = array(
+            'top-left' => __('Top Left', 'current-page-template-viewer'),
+            'top-right' => __('Top Right', 'current-page-template-viewer'),
+            'bottom-left' => __('Bottom Left', 'current-page-template-viewer'),
+            'bottom-right' => __('Bottom Right', 'current-page-template-viewer'),
+        );
 ?>
-        <select name="cptv_current_page_template_viewer_options[position]">
-            <option value="top-left" <?php selected($options['position'], 'top-left'); ?>><?php esc_html_e('Top Left', 'current-page-template-viewer'); ?></option>
-            <option value="top-right" <?php selected($options['position'], 'top-right'); ?>><?php esc_html_e('Top Right', 'current-page-template-viewer'); ?></option>
-            <option value="bottom-left" <?php selected($options['position'], 'bottom-left'); ?>><?php esc_html_e('Bottom Left', 'current-page-template-viewer'); ?></option>
-            <option value="bottom-right" <?php selected($options['position'], 'bottom-right'); ?>><?php esc_html_e('Bottom Right', 'current-page-template-viewer'); ?></option>
+        <select name="currpate_current_page_template_viewer_options[position]">
+            <?php foreach ($currpate_positions as $currpate_value => $currpate_label) : ?>
+                <option value="<?php echo esc_attr($currpate_value); ?>" <?php selected($currpate_options['position'], $currpate_value); ?>>
+                    <?php echo esc_html($currpate_label); ?>
+                </option>
+            <?php endforeach; ?>
         </select>
     <?php
     }
@@ -220,11 +170,11 @@ class CPTV_Current_Page_Template_Viewer
     /**
      * Background color field
      */
-    public function cptv_bg_color_field_callback()
+    public function currpate_bg_color_field_callback()
     {
-        $options = $this->cptv_get_options();
+        $currpate_options = $this->currpate_get_options();
     ?>
-        <input type="text" name="cptv_current_page_template_viewer_options[bg_color]" value="<?php echo esc_attr($options['bg_color']); ?>" class="color-picker" />
+        <input type="text" name="currpate_current_page_template_viewer_options[bg_color]" value="<?php echo esc_attr($currpate_options['bg_color']); ?>" class="color-picker" />
         <p class="description"><?php esc_html_e('Example: rgba(255, 255, 255, 0.5) or #ffffff', 'current-page-template-viewer'); ?></p>
     <?php
     }
@@ -232,24 +182,31 @@ class CPTV_Current_Page_Template_Viewer
     /**
      * Text color field
      */
-    public function cptv_text_color_field_callback()
+    public function currpate_text_color_field_callback()
     {
-        $options = $this->cptv_get_options();
+        $currpate_options = $this->currpate_get_options();
     ?>
-        <input type="text" name="cptv_current_page_template_viewer_options[text_color]" value="<?php echo esc_attr($options['text_color']); ?>" class="color-picker" />
+        <input type="text" name="currpate_current_page_template_viewer_options[text_color]" value="<?php echo esc_attr($currpate_options['text_color']); ?>" class="color-picker" />
     <?php
     }
 
     /**
      * Display mode field
      */
-    public function cptv_display_mode_callback()
+    public function currpate_display_mode_callback()
     {
-        $options = $this->cptv_get_options();
+        $currpate_options = $this->currpate_get_options();
+        $currpate_modes = array(
+            'always' => __('Always Display', 'current-page-template-viewer'),
+            'debug_only' => __('Only When WP_DEBUG is Enabled', 'current-page-template-viewer'),
+        );
     ?>
-        <select name="cptv_current_page_template_viewer_options[display_mode]">
-            <option value="always" <?php selected($options['display_mode'], 'always'); ?>><?php esc_html_e('Always Display', 'current-page-template-viewer'); ?></option>
-            <option value="debug_only" <?php selected($options['display_mode'], 'debug_only'); ?>><?php esc_html_e('Only When WP_DEBUG is Enabled', 'current-page-template-viewer'); ?></option>
+        <select name="currpate_current_page_template_viewer_options[display_mode]">
+            <?php foreach ($currpate_modes as $currpate_value => $currpate_label) : ?>
+                <option value="<?php echo esc_attr($currpate_value); ?>" <?php selected($currpate_options['display_mode'], $currpate_value); ?>>
+                    <?php echo esc_html($currpate_label); ?>
+                </option>
+            <?php endforeach; ?>
         </select>
         <p class="description"><?php esc_html_e('Set when template information should be displayed', 'current-page-template-viewer'); ?></p>
     <?php
@@ -258,13 +215,20 @@ class CPTV_Current_Page_Template_Viewer
     /**
      * Admin only field
      */
-    public function cptv_enable_for_admins_only_callback()
+    public function currpate_enable_for_admins_only_callback()
     {
-        $options = $this->cptv_get_options();
+        $currpate_options = $this->currpate_get_options();
+        $currpate_yes_no_options = array(
+            'yes' => __('Yes', 'current-page-template-viewer'),
+            'no' => __('No', 'current-page-template-viewer'),
+        );
     ?>
-        <select name="cptv_current_page_template_viewer_options[enable_for_admins_only]">
-            <option value="yes" <?php selected($options['enable_for_admins_only'], 'yes'); ?>><?php esc_html_e('Yes', 'current-page-template-viewer'); ?></option>
-            <option value="no" <?php selected($options['enable_for_admins_only'], 'no'); ?>><?php esc_html_e('No', 'current-page-template-viewer'); ?></option>
+        <select name="currpate_current_page_template_viewer_options[enable_for_admins_only]">
+            <?php foreach ($currpate_yes_no_options as $currpate_value => $currpate_label) : ?>
+                <option value="<?php echo esc_attr($currpate_value); ?>" <?php selected($currpate_options['enable_for_admins_only'], $currpate_value); ?>>
+                    <?php echo esc_html($currpate_label); ?>
+                </option>
+            <?php endforeach; ?>
         </select>
         <p class="description"><?php esc_html_e('If "No" is selected, the template info will be shown to all users', 'current-page-template-viewer'); ?></p>
     <?php
@@ -273,13 +237,20 @@ class CPTV_Current_Page_Template_Viewer
     /**
      * Show theme directory field
      */
-    public function cptv_show_theme_directory_callback()
+    public function currpate_show_theme_directory_callback()
     {
-        $options = $this->cptv_get_options();
+        $currpate_options = $this->currpate_get_options();
+        $currpate_yes_no_options = array(
+            'yes' => __('Yes', 'current-page-template-viewer'),
+            'no' => __('No', 'current-page-template-viewer'),
+        );
     ?>
-        <select name="cptv_current_page_template_viewer_options[show_theme_directory]">
-            <option value="yes" <?php selected($options['show_theme_directory'], 'yes'); ?>><?php esc_html_e('Yes', 'current-page-template-viewer'); ?></option>
-            <option value="no" <?php selected($options['show_theme_directory'], 'no'); ?>><?php esc_html_e('No', 'current-page-template-viewer'); ?></option>
+        <select name="currpate_current_page_template_viewer_options[show_theme_directory]">
+            <?php foreach ($currpate_yes_no_options as $currpate_value => $currpate_label) : ?>
+                <option value="<?php echo esc_attr($currpate_value); ?>" <?php selected($currpate_options['show_theme_directory'], $currpate_value); ?>>
+                    <?php echo esc_html($currpate_label); ?>
+                </option>
+            <?php endforeach; ?>
         </select>
         <p class="description"><?php esc_html_e('Display the theme directory name', 'current-page-template-viewer'); ?></p>
     <?php
@@ -288,13 +259,20 @@ class CPTV_Current_Page_Template_Viewer
     /**
      * Show template file field
      */
-    public function cptv_show_template_file_callback()
+    public function currpate_show_template_file_callback()
     {
-        $options = $this->cptv_get_options();
+        $currpate_options = $this->currpate_get_options();
+        $currpate_yes_no_options = array(
+            'yes' => __('Yes', 'current-page-template-viewer'),
+            'no' => __('No', 'current-page-template-viewer'),
+        );
     ?>
-        <select name="cptv_current_page_template_viewer_options[show_template_file]">
-            <option value="yes" <?php selected($options['show_template_file'], 'yes'); ?>><?php esc_html_e('Yes', 'current-page-template-viewer'); ?></option>
-            <option value="no" <?php selected($options['show_template_file'], 'no'); ?>><?php esc_html_e('No', 'current-page-template-viewer'); ?></option>
+        <select name="currpate_current_page_template_viewer_options[show_template_file]">
+            <?php foreach ($currpate_yes_no_options as $currpate_value => $currpate_label) : ?>
+                <option value="<?php echo esc_attr($currpate_value); ?>" <?php selected($currpate_options['show_template_file'], $currpate_value); ?>>
+                    <?php echo esc_html($currpate_label); ?>
+                </option>
+            <?php endforeach; ?>
         </select>
         <p class="description"><?php esc_html_e('Display the template file name', 'current-page-template-viewer'); ?></p>
     <?php
@@ -303,15 +281,15 @@ class CPTV_Current_Page_Template_Viewer
     /**
      * Settings page
      */
-    public function cptv_options_page()
+    public function currpate_options_page()
     {
     ?>
         <div class="wrap">
             <h1><?php echo esc_html(get_admin_page_title()); ?></h1>
             <form action="options.php" method="post">
                 <?php
-                settings_fields('cptv_current_page_template_viewer');
-                do_settings_sections('cptv_current_page_template_viewer');
+                settings_fields('currpate_current_page_template_viewer');
+                do_settings_sections('currpate_current_page_template_viewer');
                 submit_button();
                 ?>
             </form>
@@ -322,117 +300,127 @@ class CPTV_Current_Page_Template_Viewer
     /**
      * Get options
      */
-    public function cptv_get_options()
+    public function currpate_get_options()
     {
-        $options = get_option('cptv_current_page_template_viewer_options', $this->default_options);
-        return wp_parse_args($options, $this->default_options);
+        $currpate_options = get_option('currpate_current_page_template_viewer_options', $this->currpate_default_options);
+        return wp_parse_args($currpate_options, $this->currpate_default_options);
     }
 
     /**
      * Get included theme files
      */
-    public function cptv_get_included_theme_files()
+    public function currpate_get_included_theme_files()
     {
-        $included_files = get_included_files();
-        $theme_directory = get_template_directory();
-        $stylesheet_directory = get_stylesheet_directory();
-        $theme_files = array();
+        $currpate_included_files = get_included_files();
+        $currpate_theme_directory = get_template_directory();
+        $currpate_stylesheet_directory = get_stylesheet_directory();
+        $currpate_theme_files = array();
 
-        foreach ($included_files as $file) {
-            // Check if file is in current theme or child theme directory
-            if (strpos($file, $theme_directory) === 0 || strpos($file, $stylesheet_directory) === 0) {
-                // Get relative path from theme directory
-                $relative_path = '';
-                if (strpos($file, $stylesheet_directory) === 0) {
-                    $relative_path = str_replace($stylesheet_directory . '/', '', $file);
-                    $theme_name = basename($stylesheet_directory);
+        foreach ($currpate_included_files as $currpate_file) {
+            if (strpos($currpate_file, $currpate_theme_directory) === 0 || strpos($currpate_file, $currpate_stylesheet_directory) === 0) {
+                $currpate_relative_path = '';
+                if (strpos($currpate_file, $currpate_stylesheet_directory) === 0) {
+                    $currpate_relative_path = str_replace($currpate_stylesheet_directory . '/', '', $currpate_file);
+                    $currpate_theme_name = basename($currpate_stylesheet_directory);
                 } else {
-                    $relative_path = str_replace($theme_directory . '/', '', $file);
-                    $theme_name = basename($theme_directory);
+                    $currpate_relative_path = str_replace($currpate_theme_directory . '/', '', $currpate_file);
+                    $currpate_theme_name = basename($currpate_theme_directory);
                 }
 
-                // Skip functions.php and common WordPress files that are always loaded
-                if (!in_array(basename($file), array('functions.php', 'style.css'))) {
-                    $theme_files[] = $theme_name . '/' . $relative_path;
+                if (!in_array(basename($currpate_file), array('functions.php', 'style.css'))) {
+                    $currpate_theme_files[] = $currpate_theme_name . '/' . $currpate_relative_path;
                 }
             }
         }
 
-        return array_unique($theme_files);
+        return array_unique($currpate_theme_files);
     }
 
     /**
      * Display template info on frontend
      */
-    public function cptv_display_template_info()
+    public function currpate_display_template_info()
     {
-        $options = $this->cptv_get_options();
+        $currpate_options = $this->currpate_get_options();
 
-        // If display mode is debug_only and WP_DEBUG is not enabled, don't show
-        if ($options['display_mode'] === 'debug_only' && (!defined('WP_DEBUG') || !WP_DEBUG)) {
+        // Check display conditions
+        if ($currpate_options['display_mode'] === 'debug_only' && (!defined('WP_DEBUG') || !WP_DEBUG)) {
             return;
         }
 
-        // Check for admin-only setting
-        if ($options['enable_for_admins_only'] === 'yes' && !current_user_can('manage_options')) {
+        if ($currpate_options['enable_for_admins_only'] === 'yes' && !current_user_can('manage_options')) {
             return;
         }
 
-        // If both display options are set to 'no', don't show anything
-        if ($options['show_theme_directory'] === 'no' && $options['show_template_file'] === 'no') {
+        if ($currpate_options['show_theme_directory'] === 'no' && $currpate_options['show_template_file'] === 'no') {
             return;
         }
 
-        global $template;
-        $cptv_template_name = basename($template, '.php');
-        $cptv_template_dir = basename(dirname($template));
+        // Get current template information - 修正: グローバル変数も独自プレフィックスを使用
+        $currpate_current_template_path = get_page_template();
+        if (empty($currpate_current_template_path)) {
+            global $currpate_template;
+            $currpate_current_template_path = $currpate_template;
+        }
+
+        $currpate_template_name = basename($currpate_current_template_path, '.php');
+        $currpate_template_dir = basename(dirname($currpate_current_template_path));
 
         // Get included theme files
-        $included_files = $this->cptv_get_included_theme_files();
+        $currpate_included_files = $this->currpate_get_included_theme_files();
 
         // Set CSS based on position
-        $position_css = $this->cptv_get_position_css($options['position']);
+        $currpate_position_css = $this->currpate_get_position_css($currpate_options['position']);
 
-        echo '<div id="cptv-current-page-template-viewer-display" style="position: fixed; ' . esc_attr($position_css) . ' z-index: 9999; cursor: pointer;">';
-        echo '<code style="background-color: ' . esc_attr($options['bg_color']) . '; ' .
+        // Output display element
+        echo '<div id="currpate-current-page-template-viewer-display" style="position: fixed; ' . esc_attr($currpate_position_css) . ' z-index: 9999; cursor: pointer;">';
+        echo '<code style="background-color: ' . esc_attr($currpate_options['bg_color']) . '; ' .
             'padding: 0.5em 1em; ' .
             'font-size: 12px; ' .
             'line-height: 1.5em; ' .
             'border-radius: 6px; ' .
-            'color: ' . esc_attr($options['text_color']) . '; ' .
+            'color: ' . esc_attr($currpate_options['text_color']) . '; ' .
             'display: block;">';
 
         // Build display string
-        $display_parts = array();
+        $currpate_display_parts = array();
 
-        if ($options['show_theme_directory'] === 'yes') {
-            $display_parts[] = esc_html($cptv_template_dir);
+        if ($currpate_options['show_theme_directory'] === 'yes') {
+            $currpate_display_parts[] = esc_html($currpate_template_dir);
         }
 
-        if ($options['show_template_file'] === 'yes') {
-            $display_parts[] = esc_html($cptv_template_name) . '.php';
+        if ($currpate_options['show_template_file'] === 'yes') {
+            $currpate_display_parts[] = esc_html($currpate_template_name) . '.php';
         }
 
-        // Display as "ThemeName/template.php" format
-        echo esc_html(implode('/', $display_parts));
+        echo esc_html(implode('/', $currpate_display_parts));
+        echo "</code></div>\n";
 
-        echo "</code>";
-        echo "</div>\n";
+        // Output popup modal
+        $this->currpate_output_popup_modal($currpate_included_files);
 
-        // Popup modal
-        echo '<div id="cptv-current-page-template-viewer-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 10000;">';
+        // Enqueue external script
+        wp_enqueue_script('currpate-popup-script');
+    }
+
+    /**
+     * Output popup modal HTML
+     */
+    private function currpate_output_popup_modal($currpate_included_files)
+    {
+        echo '<div id="currpate-current-page-template-viewer-popup" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0, 0, 0, 0.7); z-index: 10000;">';
         echo '<div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: white; padding: 20px; border-radius: 8px; max-width: 600px; max-height: 80%; overflow-y: auto; box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);">';
 
         echo '<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid #eee; padding-bottom: 10px;">';
         echo '<h3 style="margin: 0; color: #333;">' . esc_html__('Included Template Files', 'current-page-template-viewer') . '</h3>';
-        echo '<span id="cptv-current-page-template-viewer-close" style="cursor: pointer; font-size: 24px; color: #999; font-weight: bold;">&times;</span>';
+        echo '<span id="currpate-current-page-template-viewer-close" style="cursor: pointer; font-size: 24px; color: #999; font-weight: bold;">&times;</span>';
         echo '</div>';
 
-        if (!empty($included_files)) {
+        if (!empty($currpate_included_files)) {
             echo '<ul style="list-style: none; padding: 0; margin: 0;">';
-            foreach ($included_files as $file) {
+            foreach ($currpate_included_files as $currpate_file) {
                 echo '<li style="padding: 8px 0; border-bottom: 1px solid #f0f0f0; font-family: monospace; font-size: 13px; color: #666;">';
-                echo esc_html($file);
+                echo esc_html($currpate_file);
                 echo '</li>';
             }
             echo '</ul>';
@@ -440,75 +428,28 @@ class CPTV_Current_Page_Template_Viewer
             echo '<p style="color: #999; font-style: italic;">' . esc_html__('No additional template files found.', 'current-page-template-viewer') . '</p>';
         }
 
-        echo '</div>';
-        echo '</div>';
-
-        // Enqueue JavaScript for popup functionality
-        wp_enqueue_script('cptv-popup-script', false, array(), '1.0.0', true);
-        wp_add_inline_script('cptv-popup-script', $this->cptv_get_popup_script());
-    }
-
-    /**
-     * Get popup JavaScript
-     */
-    private function cptv_get_popup_script()
-    {
-        return "
-        (function() {
-            var display = document.getElementById('cptv-current-page-template-viewer-display');
-            var popup = document.getElementById('cptv-current-page-template-viewer-popup');
-            var close = document.getElementById('cptv-current-page-template-viewer-close');
-
-            if (display && popup && close) {
-                display.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    popup.style.display = 'block';
-                });
-
-                close.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    popup.style.display = 'none';
-                });
-
-                popup.addEventListener('click', function(e) {
-                    if (e.target === popup) {
-                        popup.style.display = 'none';
-                    }
-                });
-
-                // ESC key to close
-                document.addEventListener('keydown', function(e) {
-                    if (e.key === 'Escape' && popup.style.display === 'block') {
-                        popup.style.display = 'none';
-                    }
-                });
-            }
-        })();
-        ";
+        echo '</div></div>';
     }
 
     /**
      * Get CSS based on position
      */
-    private function cptv_get_position_css($position)
+    private function currpate_get_position_css($currpate_position)
     {
-        switch ($position) {
-            case 'top-left':
-                return 'top: 10px; left: 10px; ';
-            case 'bottom-left':
-                return 'bottom: 10px; left: 10px; ';
-            case 'bottom-right':
-                return 'bottom: 10px; right: 10px; ';
-            case 'top-right':
-            default:
-                return 'top: 10px; right: 10px; ';
-        }
+        $currpate_position_map = array(
+            'top-left' => 'top: 10px; left: 10px;',
+            'bottom-left' => 'bottom: 10px; left: 10px;',
+            'bottom-right' => 'bottom: 10px; right: 10px;',
+            'top-right' => 'top: 10px; right: 10px;',
+        );
+
+        return isset($currpate_position_map[$currpate_position]) ? $currpate_position_map[$currpate_position] : $currpate_position_map['top-right'];
     }
 }
 
 // Initialize plugin
-function cptv_current_page_template_viewer_init()
+function currpate_current_page_template_viewer_init()
 {
-    CPTV_Current_Page_Template_Viewer::cptv_get_instance();
+    CURRPATE_Current_Page_Template_Viewer::currpate_get_instance();
 }
-add_action('plugins_loaded', 'cptv_current_page_template_viewer_init');
+add_action('plugins_loaded', 'currpate_current_page_template_viewer_init');
