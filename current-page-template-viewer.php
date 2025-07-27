@@ -97,25 +97,62 @@ class CURRPATE_Current_Page_Template_Viewer
             'currpate_current_page_template_viewer'
         );
 
-        $currpate_fields = array(
-            'position' => __('Position', 'current-page-template-viewer'),
-            'bg_color' => __('Background Color', 'current-page-template-viewer'),
-            'text_color' => __('Text Color', 'current-page-template-viewer'),
-            'display_mode' => __('Display Mode', 'current-page-template-viewer'),
-            'enable_for_admins_only' => __('Show to Admins Only', 'current-page-template-viewer'),
-            'show_theme_directory' => __('Show Theme Directory', 'current-page-template-viewer'),
-            'show_template_file' => __('Show Template File', 'current-page-template-viewer'),
+        // Individual field registration with correct callback names
+        add_settings_field(
+            'position',
+            __('Position', 'current-page-template-viewer'),
+            array($this, 'currpate_position_field_callback'),
+            'currpate_current_page_template_viewer',
+            'currpate_current_page_template_viewer_section'
         );
 
-        foreach ($currpate_fields as $currpate_field_key => $currpate_field_label) {
-            add_settings_field(
-                $currpate_field_key,
-                $currpate_field_label,
-                array($this, 'currpate_' . $currpate_field_key . '_field_callback'),
-                'currpate_current_page_template_viewer',
-                'currpate_current_page_template_viewer_section'
-            );
-        }
+        add_settings_field(
+            'bg_color',
+            __('Background Color', 'current-page-template-viewer'),
+            array($this, 'currpate_bg_color_field_callback'),
+            'currpate_current_page_template_viewer',
+            'currpate_current_page_template_viewer_section'
+        );
+
+        add_settings_field(
+            'text_color',
+            __('Text Color', 'current-page-template-viewer'),
+            array($this, 'currpate_text_color_field_callback'),
+            'currpate_current_page_template_viewer',
+            'currpate_current_page_template_viewer_section'
+        );
+
+        add_settings_field(
+            'display_mode',
+            __('Display Mode', 'current-page-template-viewer'),
+            array($this, 'currpate_display_mode_callback'),
+            'currpate_current_page_template_viewer',
+            'currpate_current_page_template_viewer_section'
+        );
+
+        add_settings_field(
+            'enable_for_admins_only',
+            __('Show to Admins Only', 'current-page-template-viewer'),
+            array($this, 'currpate_enable_for_admins_only_callback'),
+            'currpate_current_page_template_viewer',
+            'currpate_current_page_template_viewer_section'
+        );
+
+        add_settings_field(
+            'show_theme_directory',
+            __('Show Theme Directory', 'current-page-template-viewer'),
+            array($this, 'currpate_show_theme_directory_callback'),
+            'currpate_current_page_template_viewer',
+            'currpate_current_page_template_viewer_section'
+        );
+
+        add_settings_field(
+            'show_template_file',
+            __('Show Template File', 'current-page-template-viewer'),
+            array($this, 'currpate_show_template_file_callback'),
+            'currpate_current_page_template_viewer',
+            'currpate_current_page_template_viewer_section'
+        );
     }
 
     /**
