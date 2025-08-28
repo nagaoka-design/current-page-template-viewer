@@ -4,7 +4,7 @@ Tags: development, template, debug, developer, theme
 Requires at least: 5.0
 Tested up to: 6.8
 Requires PHP: 7.4
-Stable tag: 1.0.1
+Stable tag: 1.1.0
 License: GPL-2.0+
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -89,6 +89,17 @@ Yes, you can choose to display only the theme directory, only the template file 
 
 == Changelog ==
 
+= 1.1.0 =
+* **Major Fix**: Completely rewrote template detection system for WordPress.org compliance
+* Removed usage of global WordPress variables that were causing plugin review rejections
+* Implemented safe template detection using WordPress standard APIs only
+* Improved template file detection accuracy across all page types (posts, pages, archives, etc.)
+* Added proper fallback mechanisms for template detection
+* Enhanced compatibility with custom post types and taxonomies
+* Fixed template detection for complex WordPress template hierarchy
+* Removed PHP closing tags following WordPress coding standards
+* Better error handling and edge case management
+
 = 1.0.1 =
 * Fixed variable escaping for WordPress.org security standards
 * Updated all function and variable names to use unique prefixes
@@ -106,6 +117,9 @@ Yes, you can choose to display only the theme directory, only the template file 
 * Position and color customization
 
 == Upgrade Notice ==
+
+= 1.1.0 =
+Critical update: Fixed major template detection issues and WordPress.org compliance problems. Highly recommended for all users.
 
 = 1.0.1 =
 Security and code improvements. Recommended update for all users.

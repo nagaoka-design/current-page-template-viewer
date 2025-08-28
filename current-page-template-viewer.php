@@ -4,7 +4,7 @@
  * Plugin Name: Current Page Template Viewer
  * Plugin URI: https://github.com/nagaoka-design/current-page-template-viewer/
  * Description: Display current template file and directory name on screen
- * Version: 1.0.1
+ * Version: 1.1.0
  * Author: Nagaoka Design Office
  * Author URI: https://nag-design.com
  * License: GPL-2.0+
@@ -32,6 +32,9 @@ class CURRPATE_Current_Page_Template_Viewer
 
     // Instance
     private static $currpate_instance = null;
+
+    // Template capture
+    private $currpate_current_template = null;
 
     /**
      * Get Instance
@@ -64,7 +67,7 @@ class CURRPATE_Current_Page_Template_Viewer
             'currpate-popup-script',
             plugin_dir_url(__FILE__) . 'js/currpate-popup.js',
             array(),
-            '1.0.1',
+            '1.1.0',
             true
         );
     }
@@ -364,7 +367,9 @@ class CURRPATE_Current_Page_Template_Viewer
                     $currpate_theme_name = basename($currpate_theme_directory);
                 }
 
-                if (!in_array(basename($currpate_file), array('functions.php', 'style.css'))) {
+                // Exclude helper files, only include PHP template files
+                $currpate_basename = basename($currpate_file);
+                if (!in_array($currpate_basename, array('functions.php', 'style.css')) && pathinfo($currpate_file, PATHINFO_EXTENSION) === 'php') {
                     $currpate_theme_files[] = $currpate_theme_name . '/' . $currpate_relative_path;
                 }
             }
@@ -393,11 +398,11 @@ class CURRPATE_Current_Page_Template_Viewer
             return;
         }
 
-        // Get current template information - 修正: グローバル変数も独自プレフィックスを使用
-        $currpate_current_template_path = get_page_template();
+        // Get current template file safely
+        $currpate_current_template_path = $this->currpate_get_current_template_safe();
+
         if (empty($currpate_current_template_path)) {
-            global $currpate_template;
-            $currpate_current_template_path = $currpate_template;
+            return;
         }
 
         $currpate_template_name = basename($currpate_current_template_path, '.php');
@@ -438,6 +443,212 @@ class CURRPATE_Current_Page_Template_Viewer
 
         // Enqueue external script
         wp_enqueue_script('currpate-popup-script');
+    }
+
+    /**
+     * Get current template file safely
+     */
+    private function currpate_get_current_template_safe()
+    {
+        // Use WordPress APIs to guess template from current query
+        $currpate_template_name = $this->currpate_guess_template_from_query();
+
+        if (!empty($currpate_template_name)) {
+            $currpate_template_path = locate_template($currpate_template_name);
+            if (!empty($currpate_template_path)) {
+                return $currpate_template_path;
+            }
+        }
+
+        // Fallback: guess from included files
+        return $this->currpate_guess_template_from_includes();
+    }
+
+    /**
+     * Guess template file name from query information
+     */
+    private function currpate_guess_template_from_query()
+    {
+        if (is_404()) {
+            return '404.php';
+        } elseif (is_search()) {
+            return 'search.php';
+        } elseif (is_front_page()) {
+            if (locate_template('front-page.php')) {
+                return 'front-page.php';
+            }
+            return 'home.php';
+        } elseif (is_home()) {
+            return 'home.php';
+        } elseif (is_privacy_policy()) {
+            return 'privacy-policy.php';
+        } elseif (is_post_type_archive()) {
+            $currpate_post_type = get_query_var('post_type');
+            if (is_array($currpate_post_type)) {
+                $currpate_post_type = reset($currpate_post_type);
+            }
+            $currpate_archive_template = "archive-{$currpate_post_type}.php";
+            if (locate_template($currpate_archive_template)) {
+                return $currpate_archive_template;
+            }
+            return 'archive.php';
+        } elseif (is_tax()) {
+            $currpate_term = get_queried_object();
+            if ($currpate_term) {
+                $currpate_tax_templates = array(
+                    "taxonomy-{$currpate_term->taxonomy}-{$currpate_term->slug}.php",
+                    "taxonomy-{$currpate_term->taxonomy}.php",
+                    'taxonomy.php'
+                );
+                foreach ($currpate_tax_templates as $currpate_template) {
+                    if (locate_template($currpate_template)) {
+                        return $currpate_template;
+                    }
+                }
+            }
+            return 'taxonomy.php';
+        } elseif (is_attachment()) {
+            return 'attachment.php';
+        } elseif (is_single()) {
+            $currpate_object = get_queried_object();
+            if ($currpate_object) {
+                $currpate_single_templates = array(
+                    "single-{$currpate_object->post_type}-{$currpate_object->post_name}.php",
+                    "single-{$currpate_object->post_type}.php",
+                    'single.php'
+                );
+                foreach ($currpate_single_templates as $currpate_template) {
+                    if (locate_template($currpate_template)) {
+                        return $currpate_template;
+                    }
+                }
+            }
+            return 'single.php';
+        } elseif (is_page()) {
+            $currpate_id = get_queried_object_id();
+            $currpate_pagename = get_query_var('pagename');
+            $currpate_template_slug = get_page_template_slug();
+
+            $currpate_page_templates = array();
+
+            if ($currpate_template_slug) {
+                $currpate_page_templates[] = $currpate_template_slug;
+            }
+            if ($currpate_pagename) {
+                $currpate_page_templates[] = "page-{$currpate_pagename}.php";
+            }
+            if ($currpate_id) {
+                $currpate_page_templates[] = "page-{$currpate_id}.php";
+            }
+            $currpate_page_templates[] = 'page.php';
+
+            foreach ($currpate_page_templates as $currpate_template) {
+                if (locate_template($currpate_template)) {
+                    return $currpate_template;
+                }
+            }
+            return 'page.php';
+        } elseif (is_category()) {
+            $currpate_category = get_queried_object();
+            if ($currpate_category) {
+                $currpate_cat_templates = array(
+                    "category-{$currpate_category->slug}.php",
+                    "category-{$currpate_category->term_id}.php",
+                    'category.php',
+                    'archive.php'
+                );
+                foreach ($currpate_cat_templates as $currpate_template) {
+                    if (locate_template($currpate_template)) {
+                        return $currpate_template;
+                    }
+                }
+            }
+            return 'category.php';
+        } elseif (is_tag()) {
+            $currpate_tag = get_queried_object();
+            if ($currpate_tag) {
+                $currpate_tag_templates = array(
+                    "tag-{$currpate_tag->slug}.php",
+                    "tag-{$currpate_tag->term_id}.php",
+                    'tag.php',
+                    'archive.php'
+                );
+                foreach ($currpate_tag_templates as $currpate_template) {
+                    if (locate_template($currpate_template)) {
+                        return $currpate_template;
+                    }
+                }
+            }
+            return 'tag.php';
+        } elseif (is_author()) {
+            $currpate_author = get_queried_object();
+            if ($currpate_author) {
+                $currpate_author_templates = array(
+                    "author-{$currpate_author->user_nicename}.php",
+                    "author-{$currpate_author->ID}.php",
+                    'author.php',
+                    'archive.php'
+                );
+                foreach ($currpate_author_templates as $currpate_template) {
+                    if (locate_template($currpate_template)) {
+                        return $currpate_template;
+                    }
+                }
+            }
+            return 'author.php';
+        } elseif (is_date()) {
+            if (locate_template('date.php')) {
+                return 'date.php';
+            }
+            return 'archive.php';
+        }
+
+        return 'index.php';
+    }
+
+    /**
+     * Guess template from included files (fallback method)
+     */
+    private function currpate_guess_template_from_includes()
+    {
+        $currpate_included_files = get_included_files();
+        $currpate_theme_directory = get_template_directory();
+        $currpate_stylesheet_directory = get_stylesheet_directory();
+
+        // Find potential template files
+        $currpate_template_candidates = array();
+
+        foreach ($currpate_included_files as $currpate_file) {
+            if ((strpos($currpate_file, $currpate_theme_directory) === 0 || strpos($currpate_file, $currpate_stylesheet_directory) === 0)
+                && pathinfo($currpate_file, PATHINFO_EXTENSION) === 'php'
+            ) {
+
+                $currpate_basename = basename($currpate_file);
+
+                // Exclude helper files like functions.php, header.php, etc.
+                if (!in_array($currpate_basename, array('functions.php', 'header.php', 'footer.php', 'sidebar.php'))) {
+                    $currpate_template_candidates[] = $currpate_file;
+                }
+            }
+        }
+
+        // Select the most appropriate template file
+        if (!empty($currpate_template_candidates)) {
+            // Choose template that best matches current query
+            $currpate_expected_template = $this->currpate_guess_template_from_query();
+
+            foreach ($currpate_template_candidates as $currpate_candidate) {
+                if (basename($currpate_candidate) === $currpate_expected_template) {
+                    return $currpate_candidate;
+                }
+            }
+
+            // If expected template not found, return first candidate
+            return $currpate_template_candidates[0];
+        }
+
+        // Last resort fallback
+        return get_template_directory() . '/index.php';
     }
 
     /**
